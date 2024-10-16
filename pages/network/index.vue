@@ -212,29 +212,6 @@ export default {
               name: 'Vaults Migrating',
               value: this.thorNetwork?.vaults_migrating ? 'Yes' : 'No',
             },
-            {
-              header: 'Allocations',
-            },
-            {
-              name: 'Total Pooled RUNE',
-              value: this.network?.totalPooledRune / 10 ** 8,
-              filter: (v) => `${this.$options.filters.number(v, '0,0a')} RUNE`,
-              usdValue: true,
-            },
-            {
-              name: 'Total Bonded RUNE',
-              value:
-                +this.network?.bondMetrics?.totalActiveBond / 10 ** 8 +
-                +this.network?.bondMetrics?.totalActiveBond / 10 ** 8,
-                filter: (v) => `${this.$options.filters.number(v, '0,0a')} RUNE`,
-              usdValue: true,
-            },
-            {
-              name: 'Total Reserved RUNE',
-              value: this.network?.totalReserve / 10 ** 8,
-              filter: (v) => `${this.$options.filters.number(v, '0,0a')} RUNE`,
-              usdValue: true,
-            },
           ],
         },
         {
@@ -293,6 +270,14 @@ export default {
               value: this.network.poolShareFactor,
               filter: (v) => this.$options.filters.percent(v, 2),
             },
+          ],
+        },
+        {
+          title: 'Allocations',
+          rowStart: 3,
+          colSpan: 1,
+          items: [
+           
           ],
         },
       ]
