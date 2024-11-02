@@ -1,14 +1,8 @@
 <template>
   <Page>
     <div class="grid-network">
-      <card :is-loading="!reserveHistory" title="Reserve Breakdown">
-        <VChart
-          :option="reserveHistory"
-          :loading="!reserveHistory"
-          :loading-options="showLoading"
-          :theme="chartTheme"
-          :autoresize="true"
-        />
+      <card>
+        <info-card :options="networkOverview" :inner="true" />
       </card>
       <Card>
         <info-card :options="allocations" :inner="true" />
@@ -20,9 +14,6 @@
       </Card>
     </div>
     <div class="grid-network">
-      <card>
-        <info-card :options="networkOverview" :inner="true" />
-      </card>
       <card title="THORChain version upgrade progress">
         <ProgressBar
           v-if="versionProgress"
@@ -163,7 +154,6 @@ export default {
       thorVersion: undefined,
       inboundInfo: undefined,
       metaReserve: undefined,
-      reserveHistory: undefined,
       networkAllocations: undefined,
       extraSeries: {
         center: ['55%', '50%'],
@@ -515,96 +505,9 @@ export default {
 
     this.$api.getReserveHistory().then(({ data }) => {
       this.metaReserve = data?.meta
-      this.reserveHistory = this.formatReserve(data)
     })
   },
   methods: {
-    formatReserve(d) {
-      const xAxis = []
-      const pf = []
-      const pr = []
-      const pn = []
-      const pt = []
-      d?.intervals.forEach((interval, index) => {
-        // ignore the last index
-        if (index === d?.intervals?.length - 1) {
-          return
-        }
-        xAxis.push(
-          moment(
-            Math.floor((~~interval.endTime + ~~interval.startTime) / 2) * 1e3
-          ).format('dddd, MMM D')
-        )
-        pf.push(+interval.gasFeeOutbound / 10 ** 8)
-        pr.push((+interval.gasReimbursement * -1) / 10 ** 8)
-        pn.push(+interval.networkFee / 10 ** 8)
-
-        pt.push(
-          (+interval.gasFeeOutbound +
-            +interval.networkFee -
-            +interval.gasReimbursement) /
-            1e8
-        )
-      })
-      return this.basicChartFormat(
-        (value) => `${this.normalFormat(value)} RUNE`,
-        [
-          {
-            type: 'bar',
-            name: 'Fee outbound',
-            stack: 'total',
-            showSymbol: false,
-            data: pf,
-          },
-          {
-            type: 'bar',
-            name: 'Network Fee',
-            stack: 'total',
-            showSymbol: false,
-            data: pn,
-          },
-          {
-            type: 'bar',
-            name: 'Gas Reimbursement',
-            stack: 'total',
-            showSymbol: false,
-            data: pr,
-          },
-          {
-            type: 'line',
-            name: 'Total Income',
-            showSymbol: false,
-            areaStyle: {
-              color: 'rgba(243, 186, 47, 0.2)',
-            },
-            data: pt,
-            smooth: true,
-            lineStyle: {
-              width: 2,
-            },
-            z: 3,
-          },
-        ],
-        xAxis,
-        {
-          yAxis: [
-            {
-              type: 'value',
-              position: 'left',
-              show: false,
-              splitLine: {
-                show: true,
-              },
-              axisLine: {
-                show: false,
-              },
-              min: 'dataMin',
-              max: 'dataMax',
-            },
-          ],
-        }
-      )
-    },
     nextChurnTime() {
       if (this.lastblock && this.network) {
         return blockTime(

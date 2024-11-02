@@ -185,6 +185,10 @@ export default {
               name: 'Votes',
               link: '/network/votes',
             },
+            {
+              name: 'Reserve',
+              link: '/network/reserve',
+            },
           ],
         },
         {

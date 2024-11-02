@@ -13,6 +13,9 @@ export default {
     return {
       routes: [
         {
+         text: 'Reserve',
+         link: '/network/reserve' },
+        {
           text: 'Network',
           link: '/network',
         },
