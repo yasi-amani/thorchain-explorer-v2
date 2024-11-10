@@ -1,115 +1,168 @@
 <template>
   <Card
     :is-loading="loading"
-    title="Ongoing Streaming Swaps"
     body-class="streaming-flex"
+    :navs="[
+      { title: 'Ongoing Streaming Swaps', value: 'streamingSwaps' },
+      { title: 'Latest Transactions', value: 'recentTransactions' },
+    ]"
+    :act-nav.sync="Mode"
   >
     <template #header>
       <dot-live />
     </template>
-    <div v-if="streamingSwaps.length > 0" class="custom-card">
-      <div class="overview-box">
-        <div class="stats-container">
-          <div>
-            <span class="item-value"> Amount: </span>
-            <span
-              v-if="totalSumAmount"
-              class="total-swaps mono"
-              style="padding-right: 1rem"
-            >
-              ${{ totalSumAmount | number('0a') }}
-            </span>
-            <span v-else>-</span>
-          </div>
-          <div>
-            <span class="item-value"> Count: </span>
-            <span class="total-swaps mono">{{ streamingSwaps.length }}</span>
+    <template v-if="Mode == 'streamingSwaps'">
+      <div v-if="streamingSwaps.length > 0" class="custom-card">
+        <div class="overview-box">
+          <div class="stats-container">
+            <div>
+              <span class="item-value"> Amount: </span>
+              <span
+                v-if="totalSumAmount"
+                class="total-swaps mono"
+                style="padding-right: 1rem"
+              >
+                ${{ totalSumAmount | number('0a') }}
+              </span>
+              <span v-else>-</span>
+            </div>
+            <div>
+              <span class="item-value"> Count: </span>
+              <span class="total-swaps mono">{{ streamingSwaps.length }}</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="dashboard-card">
-      <div v-if="noStreaming" class="no-streaming">
-        <streamingIcon class="streaming-icon large-icon" />
-        <h3>There is no streaming swaps ongoing at the moment.</h3>
-      </div>
-      <template v-for="(o, i) in filteredStreamingSwaps" v-else>
-        <div :key="i" class="streaming-item">
-          <div class="upper-body">
-            <div class="asset-container">
-              <div v-if="o.inputAsset" class="asset-item">
-                <asset-icon :asset="o.inputAsset.asset" />
-                <span class="asset-name">
-                  {{
-                    $options.filters.number(
-                      o.inputAsset.amount / 1e8,
-                      '0,0.0000'
-                    )
-                  }}
-                  <small class="asset-text sec-color">{{
-                    o.inputAsset.asset
-                  }}</small>
-                </span>
+      <div class="dashboard-card">
+        <div v-if="noStreaming" class="no-streaming">
+          <streamingIcon class="streaming-icon large-icon" />
+          <h3>There is no streaming swaps ongoing at the moment.</h3>
+        </div>
+        <template v-for="(o, i) in filteredStreamingSwaps" v-else>
+          <div :key="i" class="streaming-item">
+            <div class="upper-body">
+              <div class="asset-container">
+                <div v-if="o.inputAsset" class="asset-item">
+                  <asset-icon :asset="o.inputAsset.asset" />
+                  <span class="asset-name">
+                    {{
+                      $options.filters.number(
+                        o.inputAsset.amount / 1e8,
+                        '0,0.0000'
+                      )
+                    }}
+                    <small class="asset-text sec-color">{{
+                      o.inputAsset.asset
+                    }}</small>
+                  </span>
+                </div>
+                →
+                <div v-if="o.outputAsset" class="asset-item">
+                  <asset-icon :asset="o.outputAsset.asset" />
+                  <span class="asset-name">
+                    <template v-if="o.outputAsset.amount">{{
+                      $options.filters.number(
+                        o.outputAsset.amount / 1e8,
+                        '0,0.0000'
+                      )
+                    }}</template>
+                    <small class="asset-text sec-color">
+                      {{ showAsset(o.outputAsset.asset) }}
+                    </small>
+                  </span>
+                </div>
               </div>
-              →
-              <div v-if="o.outputAsset" class="asset-item">
-                <asset-icon :asset="o.outputAsset.asset" />
-                <span class="asset-name">
-                  <template v-if="o.outputAsset.amount">{{
-                    $options.filters.number(
-                      o.outputAsset.amount / 1e8,
-                      '0,0.0000'
-                    )
-                  }}</template>
-                  <small class="asset-text sec-color">
-                    {{ showAsset(o.outputAsset.asset) }}
-                  </small>
+              <small
+                v-if="o.tx_id"
+                class="sec-color mono"
+                style="margin-left: auto"
+              >
+                <NuxtLink
+                  v-if="isValidTx(o.tx_id)"
+                  class="clickable"
+                  :to="{ path: `/tx/${o.tx_id}` }"
+                >
+                  {{ formatAddress(o.tx_id) }}
+                </NuxtLink>
+              </small>
+            </div>
+
+            <div class="extra-info">
+              <progress-bar
+                v-if="o.quantity > 0"
+                :width="(o.count / o.quantity) * 100"
+                height="4px"
+              />
+              <small style="white-space: nowrap">
+                {{ $options.filters.percent(o.count / o.quantity) }}
+              </small>
+            </div>
+
+            <small style="margin-top: 5px"
+              >{{ o.interval }} Blocks / Swap
+              <span class="sec-color"
+                ><small style="color: var(--font-color)">(ETA </small>
+                {{ o.remaningETA }}
+                <small style="color: var(--font-color)"
+                  >, Remaining swaps: {{ o.quantity - o.count }}</small
+                >
+                <small style="color: var(--font-color)">)</small>
+              </span>
+            </small>
+          </div>
+          <hr :key="i + '-hr'" class="hr-space" />
+        </template>
+      </div>
+      <nuxt-link to="/swaps" class="swaps-nav">TOP Swaps (24hr)</nuxt-link>
+    </template>
+    <template v-if="Mode == 'recentTransactions'">
+      <div class="card-body">
+        <template v-if="txs">
+          <template v-for="(t, i) in txs">
+            <div :key="i" class="row-item-transactions">
+              <div class="transactions">
+                <span
+                  v-if="t.in"
+                  style="font-size: 0.875rem; color: var(--sec-font-color)"
+                >
+                  <small style="color: var(--font-color)">TxID</small>
+                  <nuxt-link class="clickable" :to="`/tx/${t.in[0].txID}`">
+                    {{ formatAddress(showTx(t.in && t.in[0].txID)) }}
+                  </nuxt-link>
+                </span>
+                <transaction-action :row="t" :show-mini-bubble="false" />
+              </div>
+              <div class="txs">
+                <span>
+                  <small style="color: var(--font-color)">From</small>
+                  <nuxt-link
+                    class="clickable"
+                    :to="`/address/${t.in[0].address}`"
+                  >
+                    {{ formatAddress(t.in && t.in[0].address) }}
+                  </nuxt-link>
+                </span>
+                <nuxt-link class="clickable header" :to="`/block/${t.height}`">
+                  {{ t.height | number('0,0') }}
+                </nuxt-link>
+
+                <span class="timestamp">
+                  {{ formatMoment(t.date) }}
                 </span>
               </div>
             </div>
-            <small
-              v-if="o.tx_id"
-              class="sec-color mono"
-              style="margin-left: auto"
-            >
-              <NuxtLink
-                v-if="isValidTx(o.tx_id)"
-                class="clickable"
-                :to="{ path: `/tx/${o.tx_id}` }"
-              >
-                {{ formatAddress(o.tx_id) }}
-              </NuxtLink>
-            </small>
-          </div>
-
-          <div class="extra-info">
-            <progress-bar
-              v-if="o.quantity > 0"
-              :width="(o.count / o.quantity) * 100"
-              height="4px"
-            />
-            <small style="white-space: nowrap">
-              {{ $options.filters.percent(o.count / o.quantity) }}
-            </small>
-          </div>
-
-          <small style="margin-top: 5px"
-            >{{ o.interval }} Blocks / Swap
-            <span class="sec-color"
-              ><small style="color: var(--font-color)">(ETA </small>
-              {{ o.remaningETA }}
-              <small style="color: var(--font-color)"
-                >, Remaining swaps: {{ o.quantity - o.count }}</small
-              >
-              <small style="color: var(--font-color)">)</small>
-            </span>
-          </small>
+            <hr :key="i + 'hr'" class="hr-space" />
+          </template>
+        </template>
+        <div v-else class="loading">
+          <BounceLoader color="var(--font-color)" size="3rem" />
         </div>
-        <hr :key="i + '-hr'" class="hr-space" />
-      </template>
-    </div>
-    <nuxt-link to="/swaps" class="swaps-nav">TOP Swaps (24hr)</nuxt-link>
-
+      </div>
+      <nuxt-link to="/txs" class="swaps-nav">
+        <span>More</span>
+        <ArrowRightIcon class="more-link" />
+      </nuxt-link>
+    </template>
     <template #footer>
       <b-pagination
         v-if="streamingSwaps.length > perPage"
@@ -125,11 +178,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import moment from 'moment'
+import TransactionAction from './transactions/TransactionAction.vue'
 import { shortAssetName } from '~/utils'
 import streamingIcon from '@/assets/images/streaming.svg?inline'
+import ArrowRightIcon from '~/assets/images/arrow-right.svg?inline'
 
 export default {
-  components: { streamingIcon },
+  components: { streamingIcon, TransactionAction, ArrowRightIcon },
   data() {
     return {
       currentPage: 1,
@@ -138,6 +193,7 @@ export default {
       streamingSwaps: [],
       intervalId: undefined,
       perPage: 7,
+      Mode: 'streamingSwaps',
       totalSumAmount: 0,
     }
   },
@@ -158,6 +214,10 @@ export default {
     },
   },
   mounted() {
+    this.$api.getDashboardData().then(({ data }) => {
+      this.txs = data?.txs?.actions
+    })
+
     this.intervalId = setInterval(() => {
       this.updateStreamingSwap()
     }, 10000)
@@ -278,11 +338,30 @@ export default {
         this.loading = false
       }
     },
+    showTx(txID) {
+      if (
+        txID ===
+        '0000000000000000000000000000000000000000000000000000000000000000'
+      ) {
+        return 'Internal Tx'
+      }
+      return txID
+    },
+    formatMoment(time) {
+      return moment(Number.parseInt(time / 10 ** 6)).fromNow()
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.more-link {
+  margin-left: 4px;
+  vertical-align: middle;
+  fill: currentColor;
+  height: 1rem;
+  width: 1rem;
+}
 .dashboard-card {
   display: flex;
   flex-direction: column;
@@ -290,6 +369,8 @@ export default {
 }
 .swaps-nav {
   margin-top: 1rem !important;
+  display: flex;
+  align-items: center !important;
 }
 
 .overview-box {

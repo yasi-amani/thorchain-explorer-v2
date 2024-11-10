@@ -192,6 +192,7 @@
       <outbounds />
       <streamings />
     </div>
+
     <div class="cards-container">
       <info-card :options="statsSettings" />
       <info-card :options="networkSettings" />
@@ -241,62 +242,6 @@
                     <span style="color: var(--font-color)">
                       {{ b.size | number('0,0') }}
                     </span>
-                  </span>
-                </div>
-              </div>
-              <hr :key="i + 'hr'" class="hr-space" />
-            </template>
-          </template>
-          <div v-else class="loading">
-            <BounceLoader color="var(--font-color)" size="3rem" />
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <h2 style="color: var(--sec-font-color)">Latest Transactions</h2>
-            <nuxt-link to="/txs" class="more-link clickable">
-              More
-              <ArrowRightIcon />
-            </nuxt-link>
-          </div>
-        </div>
-        <div class="card-body">
-          <template v-if="txs">
-            <template v-for="(t, i) in txs">
-              <div :key="i" class="row-item-transactions">
-                <div class="transactions">
-                  <span
-                    v-if="t.in"
-                    style="font-size: 0.875rem; color: var(--sec-font-color)"
-                  >
-                    <small style="color: var(--font-color)">TxID</small>
-                    <nuxt-link class="clickable" :to="`/tx/${t.in[0].txID}`">
-                      {{ formatAddress(showTx(t.in && t.in[0].txID)) }}
-                    </nuxt-link>
-                  </span>
-                  <transaction-action :row="t" :show-mini-bubble="false" />
-                </div>
-                <div class="txs">
-                  <span>
-                    <small style="color: var(--font-color)">From</small>
-                    <nuxt-link
-                      class="clickable"
-                      :to="`/address/${t.in[0].address}`"
-                    >
-                      {{ formatAddress(t.in && t.in[0].address) }}
-                    </nuxt-link>
-                  </span>
-                  <nuxt-link
-                    class="clickable header"
-                    :to="`/block/${t.height}`"
-                  >
-                    {{ t.height | number('0,0') }}
-                  </nuxt-link>
-
-                  <span class="timestamp">
-                    {{ formatMoment(t.date) }}
                   </span>
                 </div>
               </div>
