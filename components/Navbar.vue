@@ -213,6 +213,12 @@ export default {
           unicon: 'exchangeUnselected',
           icon: 'exchangeSelected',
           link: '/txs',
+          submenu: [
+            {
+              name: 'Swaps',
+              link: '/swaps',
+            },
+          ]
         },
         {
           name: 'Pools',
