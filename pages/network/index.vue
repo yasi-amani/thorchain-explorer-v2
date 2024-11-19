@@ -1,5 +1,6 @@
 <template>
   <Page>
+    <pendulum/>
     <div class="grid-network">
       <card :is-loading="!reserveHistory" title="Reserve Breakdown">
         <VChart
