@@ -173,77 +173,47 @@ export default {
   data() {
     return {
       selectedUnit: 'rune',
-      totalBurned24h: undefined,
-      totalBurned7d: undefined,
-      totalBurned30d: undefined,
-      updateInterval: undefined,
       totalBurned: undefined,
       burnedBlocks: [],
       burnChart: undefined,
       selectedInterval: '24h',
-      intervals: {
-        '24h': '24H',
-        '7d': '7D',
-        '30d': '30D',
-      },
-    }
+      intervals: { '24h': '24H', '7d': '7D', '30d': '30D' },
+      updateInterval: undefined,
+    };
   },
   computed: {
-    ...mapGetters({
-      runePrice: 'getRunePrice',
-    }),
+    ...mapGetters({ runePrice: 'getRunePrice' }),
     displayTotalBurned() {
-      if (this.selectedUnit === 'dollar') {
-        return this.totalBurned * this.runePrice
-      }
-      return this.totalBurned
+      return this.selectedUnit === 'dollar' ? this.totalBurned * this.runePrice : this.totalBurned;
     },
   },
   mounted() {
-    this.updateInterval = setInterval(() => {
-      this.getBurnData()
-    }, 5000)
-    this.fetchData(this.selectedInterval)
+    this.updateInterval = setInterval(this.getBurnData, 5000);
+    this.fetchData(this.selectedInterval);
   },
   destroyed() {
-    clearInterval(this.updateInterval)
+    clearInterval(this.updateInterval);
   },
   methods: {
     async fetchData(intervalKey) {
+      const intervalMapping = {
+        '7d': { type: 'day', count: 7, target: 'totalBurned7d' },
+        '30d': { type: 'day', count: 30, target: 'totalBurned30d' },
+        '24h': { type: 'hour', count: 24, target: 'totalBurned24h' },
+      };
+
+      const { type, count, target } = intervalMapping[intervalKey];
       try {
-        let resData
-        let incomeBurn
-
-        if (intervalKey === '7d') {
-          resData = (await this.$api.earnings('day', 7)).data
-          incomeBurn =
-            resData?.meta?.pools?.find((pool) => pool.pool === 'income_burn')
-              ?.earnings || 0
-          this.totalBurned7d = +incomeBurn / 1e8
-        } else if (intervalKey === '30d') {
-          resData = (await this.$api.earnings('day', 30)).data
-          incomeBurn =
-            resData?.meta?.pools?.find((pool) => pool.pool === 'income_burn')
-              ?.earnings || 0
-          this.totalBurned30d = +incomeBurn / 1e8
-        } else if (intervalKey === '24h') {
-          resData = (await this.$api.earnings('hour', 24)).data
-          incomeBurn =
-            resData?.meta?.pools?.find((pool) => pool.pool === 'income_burn')
-              ?.earnings || 0
-          this.totalBurned24h = +incomeBurn / 1e8
-        }
-
-        this.burnChart = this.formatBurn(
-          resData,
-          intervalKey.includes('d') ? 'day' : 'hour'
-        )
+        const resData = (await this.$api.earnings(type, count)).data;
+        const incomeBurn = resData?.meta?.pools?.find((pool) => pool.pool === 'income_burn')?.earnings || 0;
+        this[target] = +incomeBurn / 1e8;
+        this.burnChart = this.formatBurn(resData, type);
       } catch (error) {
         console.error('Error fetching data:', error)
       }
     },
     toggleUnit() {
-      this.selectedUnit = this.selectedUnit === 'rune' ? 'dollar' : 'rune'
+      this.selectedUnit = this.selectedUnit === 'rune' ? 'dollar' : 'rune';
     },
     formatBurn(data, intervalType) {
       const xAxis = []
@@ -360,112 +330,17 @@ export default {
       return moment.duration(now.diff(before)).asSeconds().toFixed()
     },
   },
-}
+};
+
 </script>
 
 <style lang="scss" scoped>
-.total-res-data {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: 1rem;
-  width: 100%;
-  justify-content: center;
-}
-
-.unit-switcher {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: auto;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 53px;
-  height: 27px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--border-color);
-  transition: 0.4s;
-  border-radius: 34px;
-}
-
-.slider:before {
-  position: absolute;
-  content: '';
-  height: 19px;
-  width: 21px;
-  border-radius: 50%;
-  left: 4px;
-  bottom: 4px;
-  background-color: var(--sec-font-color);
-  transition: 0.4s;
-}
-
-input:checked + .slider {
-  background-color: #ffa86b;
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-.unit-label {
-  font-size: 14px;
-  color: var(--font-color);
-  margin-left: 10px;
-}
-.total-burned-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  margin-top: 1rem;
-}
-
-.burned-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-h3 {
-  margin-bottom: 10px;
-  font-size: 16px;
-  color: var(--font-color);
-}
-
-.total-burned {
-  font-size: 16px;
-  font-weight: bold;
-  color: var(--sec-font-color);
-}
-
 .burn-card {
   flex: 1;
-  justify-content: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   background-color: var(--bg-color);
   border: 1px solid var(--border-color);
@@ -475,6 +350,7 @@ h3 {
   color: var(--sec-font-color);
   max-width: 50rem;
   margin: auto;
+
   h3 {
     font-size: 1.2rem;
     display: flex;
@@ -482,17 +358,21 @@ h3 {
     justify-content: center;
     margin: 0;
   }
-
   .burn-chart {
     height: 200px;
     min-height: 200px;
+
   }
 
-  .rune-cur {
-    height: 3rem;
-    fill: currentColor;
-    font-size: 3rem;
+  .burn-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    fill: #ffa86b;
   }
+
+ 
 
   .burned-value {
     display: flex;
@@ -515,12 +395,10 @@ h3 {
     }
   }
 
-  .burn-icon {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    margin-right: 0.5rem;
-    fill: #ffa86b;
+  .rune-cur {
+    height: 3rem;
+    fill: currentColor;
+    font-size: 3rem;
   }
 }
 
@@ -534,31 +412,117 @@ h3 {
   margin-top: 1rem;
 }
 
-.interval-buttons {
+.total-res-data {
   display: flex;
   align-items: center;
   margin-top: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.unit-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.switch {
+  position: relative;
+  width: 53px;
+  height: 27px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-color);
+    transition: 0.4s;
+    border-radius: 34px;
+
+    &:before {
+      position: absolute;
+      content: '';
+      height: 19px;
+      width: 21px;
+      border-radius: 50%;
+      left: 4px;
+      bottom: 4px;
+      background-color: var(--sec-font-color);
+      transition: 0.4s;
+    }
+  }
+  input:checked + .slider {
+  background-color: #ffa86b;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+  }
+
+
+.unit-label {
+  font-size: 14px;
+  color: var(--font-color);
+  margin-left: 10px;
+}
+
+.total-burned-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.burned-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex: 1;
+}
+  h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: var(--font-color);
+  }
+
+  .total-burned {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--sec-font-color);
+  }
+
+
+.interval-buttons {
+  display: flex;
+  align-items: center;
+  margin-top: 1.3rem;
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   padding: 4px 5px;
   gap: 2rem;
   width: 21rem;
-  margin-top: 1.3rem;
 
   @include lg {
     width: 28rem;
   }
 
   button {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-
     flex: 1;
     padding: 10px 4px;
     font-size: 1rem;
     color: var(--bs-secondary-color);
-
     background-color: transparent;
     border: none;
     border-radius: 8px;
@@ -567,8 +531,6 @@ h3 {
 
     &.active {
       padding: 0.5rem;
-      border-radius: 0.5rem;
-      margin: 1.5px 5px;
       background-color: var(--border-color);
       color: #ffa86b;
     }
@@ -583,7 +545,6 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex: 1;
   margin: 1rem;
 
   .block-info {
@@ -613,6 +574,7 @@ h3 {
 
 .block-enter-active {
   transition: all 1s;
+
   .block-info .height {
     color: #ffa86b;
   }
