@@ -1,3 +1,4 @@
+import axios from 'axios'
 import axiosRetry from 'axios-retry'
 import {
   getStats,
@@ -113,7 +114,9 @@ import {
 } from './insights.api'
 import { getTHORLastBlock, getBlockHeight, getQuote } from './infra'
 import endpoints from './endpoints'
+
 export var $axiosInstace
+export var network
 
 // interceptor to catch errors
 const errorInterceptor = (error) => {
@@ -167,8 +170,13 @@ const responseInterceptor = (response) => {
   return response
 }
 
-export default function ({ $axios }, inject) {
-  axiosRetry($axios, {
+export default function () {
+  const config = useRuntimeConfig()
+  const axiosInstance = axios.create({
+    baseURL: endpoints[config.public.network].MIDGARD_BASE_URL,
+  })
+  // Add axios retry
+  axiosRetry(axiosInstance, {
     retries: 3,
     retryDelay: axiosRetry.exponentialDelay,
     retryCondition: (error) => {
@@ -179,14 +187,16 @@ export default function ({ $axios }, inject) {
       return status === 504 || status === 429
     },
   })
-  $axios.interceptors.response.use(responseInterceptor, errorInterceptor)
-  if (process.env.NETWORK === 'mainnet') {
-    $axios.defaults.headers.common['X-Client-ID'] = 'thorchain.net'
+
+  // Add headers and error interceptors
+  axiosInstance.interceptors.response.use(responseInterceptor, errorInterceptor)
+  if (config.public.network === 'mainnet') {
+    axiosInstance.defaults.headers.common['X-Client-ID'] = 'thorchain.net'
   }
 
   // defining the inner Vue axios instace to the outer scope
-  $axios.defaults.baseURL = endpoints[process.env.NETWORK].MIDGARD_BASE_URL
-  $axiosInstace = $axios
+  $axiosInstace = axiosInstance
+  network = config.public.network
 
   const api = {
     getBlockHeight,
@@ -298,5 +308,5 @@ export default function ({ $axios }, inject) {
     getExecutionQuality,
   }
 
-  inject('api', api)
+  return api
 }

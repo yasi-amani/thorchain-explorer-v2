@@ -124,14 +124,14 @@
 </template>
 
 <script>
-import AngleIcon from '~/assets/images/angle-down.svg?inline'
-import ArrowIcon from '@/assets/images/arrow.svg?inline'
-import External from '@/assets/images/external.svg?inline'
+import AngleIcon from '~/assets/images/angle-down.svg?component'
+import ArrowIcon from '@/assets/images/arrow.svg?component'
+import External from '@/assets/images/external.svg?component'
 import { assetFromString, getExplorerAddressUrl } from '~/utils'
-import SandTimer from '@/assets/images/sandtimer.svg?inline'
-import Clock from '~/assets/images/alarmclock.svg?inline'
-import circleSuccess from '~/assets/images/circle.svg?inline'
-import WarningIcon from '~/assets/images/warning.svg?inline'
+import SandTimer from '@/assets/images/sandtimer.svg?component'
+import Clock from '~/assets/images/alarmclock.svg?component'
+import circleSuccess from '~/assets/images/circle.svg?component'
+import WarningIcon from '~/assets/images/warning.svg?component'
 
 export default {
   components: {
@@ -164,15 +164,13 @@ export default {
       circleStyle: {
         'stroke-dashoffset': 100,
       },
+      stacks: this.stacks || [],
     }
   },
   computed: {
     showAccordion() {
-      if (this.stacks.length > 0) {
-        return true
-      }
-      return false
-    },
+    return Array.isArray(this.stacks) && this.stacks.length > 0;
+  },
   },
   watch: {
     remainingTime(newCountdown) {

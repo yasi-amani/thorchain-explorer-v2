@@ -45,10 +45,9 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import global from '~/mixins.js/global'
-import SearchIcon from '~/assets/images/search.svg?inline'
+import SearchIcon from '~/assets/images/search.svg?component'
 
 export default {
   name: 'DefaultLayout',
@@ -217,7 +216,6 @@ export default {
   },
 }
 
-Vue.mixin(global)
 </script>
 
 <style lang="scss">

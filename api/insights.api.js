@@ -1,23 +1,23 @@
 import endpoints from './endpoints'
-import { $axiosInstace } from './index'
+import { $axiosInstace, network } from './index'
 
 const INSIGHT_URL = 'https://flipsidecrypto.xyz/api/v1/queries/'
 
 export function getChurnHistory() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/churnHistory'
+    endpoints[network].SERVER_URL + 'api/churnHistory'
   )
 }
 
 export function getFlipTVL() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/tvlHistoryQuery'
+    endpoints[network].SERVER_URL + 'api/tvlHistoryQuery'
   )
 }
 
 export function getRunePrice() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/runePrice'
+    endpoints[network].SERVER_URL + 'api/runePrice'
   )
 }
 

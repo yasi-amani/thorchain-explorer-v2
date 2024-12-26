@@ -152,13 +152,15 @@
 
 <script>
 import { mapMutations, mapGetters } from 'vuex'
-import ThorchainLogo from '~/assets/images/thorchain-logo.svg?inline'
-import BlueElectra from '~/assets/images/blueelectra.svg?inline'
-import MenuIcon from '~/assets/images/menu-burger.svg?inline'
-import CrossIcon from '~/assets/images/cross.svg?inline'
-import MoonIcon from '~/assets/images/moon-icon.svg?inline'
-import SunIcon from '~/assets/images/sun-icon.svg?inline'
+import ThorchainLogo from '~/assets/images/thorchain-logo.svg?component'
+import BlueElectra from '~/assets/images/blueelectra.svg?component'
+import MenuIcon from '~/assets/images/menu-burger.svg?component'
+import CrossIcon from '~/assets/images/cross.svg?component'
+import MoonIcon from '~/assets/images/moon-icon.svg?component'
+import SunIcon from '~/assets/images/sun-icon.svg?component'
 import links from '~/const/links'
+
+const config = useRuntimeConfig()
 
 export default {
   name: 'NavBar',
@@ -238,7 +240,7 @@ export default {
               name: 'Pools',
               link: '/pools/main',
             },
-            process.env.NETWORK === 'mainnet'
+            config.public.network === 'mainnet'
               ? {
                   name: 'Pool Earnings',
                   link: '/pools/earnings',
@@ -268,7 +270,7 @@ export default {
               name: 'Trade Assets',
               link: '/thorfi/trades',
             },
-            process.env.NETWORK === 'mainnet'
+            config.public.network === 'mainnet'
               ? {
                   name: 'Rune Pool',
                   link: '/thorfi/runepool',
@@ -282,7 +284,7 @@ export default {
           icon: 'shieldSelected',
           link: '/vaults',
         },
-        process.env.NETWORK === 'mainnet'
+        config.public.network === 'mainnet'
           ? {
               name: 'Insights',
               unicon: 'chartUnselected',
@@ -320,7 +322,7 @@ export default {
       return this.$store.getters.getTheme
     },
     networkEnv() {
-      return process.env.NETWORK
+      return config.public.network
     },
   },
   methods: {

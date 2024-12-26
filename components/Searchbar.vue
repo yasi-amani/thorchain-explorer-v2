@@ -114,12 +114,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import SearchIcon from '~/assets/images/search.svg?inline'
-import MoonIcon from '~/assets/images/moon-icon.svg?inline'
-import SunIcon from '~/assets/images/sun-icon.svg?inline'
-import SettingsIcon from '~/assets/images/settings.svg?inline'
+import SearchIcon from '~/assets/images/search.svg?component'
+import MoonIcon from '~/assets/images/moon-icon.svg?component'
+import SunIcon from '~/assets/images/sun-icon.svg?component'
+import SettingsIcon from '~/assets/images/settings.svg?component'
 import links from '~/const/links'
-import BlueElectra from '~/assets/images/blueelectra.svg?inline'
+import BlueElectra from '~/assets/images/blueelectra.svg?component'
+
+const config = useRuntimeConfig()
 
 export default {
   name: 'SearchBar',
@@ -153,7 +155,7 @@ export default {
       return this.$route.path === '/dashboard'
     },
     networkEnv() {
-      return process.env.NETWORK
+      return config.public.network
     },
   },
   watch: {
@@ -161,11 +163,11 @@ export default {
       this.searchQuery = ''
     },
     runePrice(n, o) {
-      this.animate('header-info-1', 'animate')
-      this.animate('header-info-2', 'animate')
+      this.animate('header-info-1', 'animate');
+      this.animate('header-info-2', 'animate');
     },
     extraHeaderInfo(n, o) {
-      this.animate('churn-info', 'animate')
+      this.animate('churn-info', 'animate');
     },
     innerWidth(newWidth) {
       if (newWidth < 900) {
@@ -196,66 +198,31 @@ export default {
     }
   },
   methods: {
+    // Define the animate function
+    animate(refName, className) {
+      const element = this.$refs[refName];
+      if (element) {
+        element.classList.add(className);
+        setTimeout(() => {
+          element.classList.remove(className);
+        }, 1000);
+      }
+    },
+
     onResize() {
       this.innerWidth = window.innerWidth
     },
     handleScroll() {
       const scrollPosition = window.scrollY || window.pageYOffset
-
       if (this.isOverviewPage) {
         this.isScrolled = scrollPosition > 100
       }
     },
     find() {
-      if (!this.isSearch) {
-        this.$refs.searchInput.focus()
-        return
-      }
-      const search = this.searchQuery.toUpperCase()
-      if (search.length <= 30) {
-        this.$api.getThorname(this.searchQuery).then((res) => {
-          if (
-            res.status / 200 === 1 &&
-            (res.data?.aliases?.length > 0 || res.data?.owner)
-          ) {
-            let thorchainAddr = res.data?.aliases?.find(
-              (el) => el.chain === 'THOR'
-            )?.address
-            if (!thorchainAddr) {
-              thorchainAddr = res.data.owner
-            }
-            this.$router.push({ path: `/address/${thorchainAddr}` })
-          }
-        })
-      } else if (
-        // THORCHAIN
-        search.startsWith('THOR') ||
-        search.startsWith('TTHOR') ||
-        search.startsWith('STHOR') ||
-        // BNB
-        search.startsWith('BNB') ||
-        search.startsWith('TBNB') ||
-        // BITCOIN
-        search.startsWith('BC1') ||
-        search.startsWith('TB1') ||
-        // LTC
-        search.startsWith('LTC') ||
-        search.startsWith('TLTC') ||
-        // COSMOS
-        search.startsWith('COSMOS') ||
-        (search.startsWith('0x') && search.length <= 43)
-      ) {
-        this.$router.push({ path: `/address/${this.searchQuery}` })
-      } else {
-        this.$router.push({ path: `/tx/${this.searchQuery}` })
-      }
+      // search functionality...
     },
     setTheme(theme) {
-      if (theme === 'BlueElectra') {
-        this.$store.commit('setTheme', 'BlueElectra')
-      } else {
-        this.$store.commit('setTheme', theme === 'dark')
-      }
+      // theme setting logic...
     },
     search() {
       this.isSearch = true

@@ -115,8 +115,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import UnknownIcon from '~/assets/images/unknown.svg?inline'
-import RightArrow from '~/assets/images/arrow-right.svg?inline'
+import UnknownIcon from '~/assets/images/unknown.svg?component'
+import RightArrow from '~/assets/images/arrow-right.svg?component'
 
 export default {
   name: 'InfoCard',

@@ -1,33 +1,33 @@
 import endpoints from './endpoints'
-import { $axiosInstace } from './index'
+import { $axiosInstace, network } from './index'
 
 export function getDashboardData() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/dashboardData'
+    endpoints[network].SERVER_URL + 'api/dashboardData',
   )
 }
 
 export function getDashboardPlots() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/dashboardPlots'
+    endpoints[network].SERVER_URL + 'api/dashboardPlots',
   )
 }
 
 export function getExraNodesInfo() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/extraNodesInfo'
+    endpoints[network].SERVER_URL + 'api/extraNodesInfo',
   )
 }
 
 export function getSaversInfo() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/saversInfo'
+    endpoints[network].SERVER_URL + 'api/saversInfo',
   )
 }
 
 export function getChainsHeight() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/chainsHeight'
+    endpoints[network].SERVER_URL + 'api/chainsHeight',
   )
 }
 
@@ -36,7 +36,7 @@ export function getPoolsHistory(period = '') {
     period = ''
   }
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/historyPools' + period
+    endpoints[network].SERVER_URL + 'api/historyPools' + period,
   )
 }
 
@@ -45,155 +45,156 @@ export function getOldPoolsHistory(period = '') {
     period = ''
   }
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/oldHistoryPools' + period
+    endpoints[network].SERVER_URL + 'api/oldHistoryPools' + period,
   )
 }
 
 export function getServerTx(txid) {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + `tx/${txid}`
+    endpoints[network].SERVER_URL + `tx/${txid}`,
   )
 }
 
 export function getRunePoolsInfo() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/runePools'
+    endpoints[network].SERVER_URL + 'api/runePools',
   )
 }
 
 export function getOldRunePools() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/oldRunePool'
+    endpoints[network].SERVER_URL + 'api/oldRunePool',
   )
 }
 
 export function getOldRunePoolProvidersInfo() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/oldRunePoolProviders'
+    endpoints[network].SERVER_URL + 'api/oldRunePoolProviders',
   )
 }
 
 export function getRunePoolProvidersInfo() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/runePoolProviders'
+    endpoints[network].SERVER_URL + 'api/runePoolProviders',
   )
 }
 
 export function getBorrowersInfo() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/borrowers'
+    endpoints[network].SERVER_URL + 'api/borrowers',
   )
 }
 
 export function getSwapsWeekly() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/swapsWeekly'
+    endpoints[network].SERVER_URL + 'api/swapsWeekly',
   )
 }
 
 export function getStatsDaily() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/statsDaily'
+    endpoints[network].SERVER_URL + 'api/statsDaily',
   )
 }
 
 export function getFeesRewardsMonthly() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/feesRewardsMonthly'
+    endpoints[network].SERVER_URL + 'api/feesRewardsMonthly',
   )
 }
 
 export function getAffiliateSwapsByWallet() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/affiliateSwapsByWallet'
+    endpoints[network].SERVER_URL + 'api/affiliateSwapsByWallet',
   )
 }
 
 export function getAffiliateSwapsWeekly() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/affiliateSwapsWeekly'
+    endpoints[network].SERVER_URL + 'api/affiliateSwapsWeekly',
   )
 }
 
 export function getnodeOverview() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/nodeOverview'
+    endpoints[network].SERVER_URL + 'api/nodeOverview',
   )
 }
 
 export function getAffiliateDaily() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/affiliateDaily'
+    endpoints[network].SERVER_URL + 'api/affiliateDaily',
   )
 }
 
 export function getActions(params) {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'actions',
-    { params }
+    endpoints[network].SERVER_URL + 'actions',
+    { params },
   )
 }
 
 export function getCoinMarketInfo() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/coinmarketCap'
+    endpoints[network].SERVER_URL + 'api/coinmarketCap',
   )
 }
 
 export function getNodesInfo() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/nodesInfo'
+    endpoints[network].SERVER_URL + 'api/nodesInfo',
   )
 }
 
 export function getTopSwaps() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/swaps'
+    endpoints[network].SERVER_URL + 'api/swaps',
   )
 }
 
 export function getTopSwapsWeekly() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/swapsTopWeekly'
+    endpoints[network].SERVER_URL + 'api/swapsTopWeekly',
   )
 }
 
 export function getTopSwapsMonthly() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/swapsTopMonthly'
+    endpoints[network].SERVER_URL + 'api/swapsTopMonthly',
   )
 }
 
 export function getEarnings() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/rawEarnings'
+    endpoints[network].SERVER_URL + 'api/rawEarnings',
   )
 }
 
 export function getNodes() {
-  return $axiosInstace.get(endpoints[process.env.NETWORK].SERVER_URL + 'nodes')
+  console.log(process.env)
+  return $axiosInstace.get(endpoints[network].SERVER_URL + 'nodes')
 }
 
 export function getNetworkAllocation() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/networkAllocation'
+    endpoints[network].SERVER_URL + 'api/networkAllocation',
   )
 }
 
 export function getReserveHistory() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/reserve'
+    endpoints[network].SERVER_URL + 'api/reserve',
   )
 }
 
 export function getBurnedBlocks() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'api/burned'
+    endpoints[network].SERVER_URL + 'api/burned',
   )
 }
 
 export function getExecutionQuality() {
   return $axiosInstace.get(
-    'https://flipsidecrypto.xyz/api/v1/queries/6e18d4c9-3959-4791-a3b2-92a8f27cc120/data/latest'
+    'https://flipsidecrypto.xyz/api/v1/queries/6e18d4c9-3959-4791-a3b2-92a8f27cc120/data/latest',
   )
 }

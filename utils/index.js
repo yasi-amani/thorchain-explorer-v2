@@ -627,14 +627,12 @@ export function assetFromString(s) {
   const isSecure =
     s.includes(SECURE_DELIMITER) &&
     !s.includes(NON_SYNTH_DELIMITER) &&
-    !s.includes(TRADE_DELIMITER) &&
-    !s.includes(SYNTH_DELIMITER)
+    !s.includes(TRADE_DELIMITER)
   delimiter = isTrade
     ? TRADE_DELIMITER
     : isSecure
       ? SECURE_DELIMITER
       : delimiter
-
   const data = s.split(delimiter)
   if (data.length <= 1 || data[1]?.length < 1) {
     return null
@@ -656,10 +654,9 @@ export function assetFromString(s) {
   }
 }
 
-export function assetToString({ chain, synth, trade, symbol, secure }) {
+export function assetToString({ chain, synth, trade, symbol }) {
   let delimiter = synth ? SYNTH_DELIMITER : NON_SYNTH_DELIMITER
   delimiter = trade ? TRADE_DELIMITER : delimiter
-  delimiter = secure ? SECURE_DELIMITER : delimiter
   return `${chain}${delimiter}${symbol}`
 }
 
@@ -679,8 +676,13 @@ export const nameMapping = {
   LiFi: ['lifi'],
   'OneKey Wallet': ['oky'],
   Symbiosis: ['sy'],
-  vultisig: ['va', 'vi', 'v0'],
-  thorwallet: ['wr', 'thor1a427q3v96psuj4fnughdw8glt5r7j38lj7rkp8'],
+  vultisig: [
+    'va',
+    'vi',
+    'v0',
+    'wr',
+    'thor1a427q3v96psuj4fnughdw8glt5r7j38lj7rkp8',
+  ],
   'Cake Wallet': ['cakewallet'],
   OKX: ['okw'],
   Eldorito: ['eld', 'ELD'],
@@ -704,8 +706,8 @@ export const interfaces = {
     icon: 'thorwallet',
   },
   xdefi: {
-    name: 'Ctrl',
-    icon: 'ctrl',
+    name: 'XDEFI',
+    icon: 'xdefi',
   },
   asgardex: {
     name: 'ASGARDEX',
@@ -783,10 +785,10 @@ export const affiliateMap = {
   tr: interfaces.trustwallet,
   te: interfaces.trustwallet,
   tb: interfaces.trustwallet,
-  thor1a427q3v96psuj4fnughdw8glt5r7j38lj7rkp8: interfaces.thorwallet,
-  wr: interfaces.thorwallet,
-  tgt: interfaces.thorwallet,
-  thorwallet: interfaces.thorwallet,
+  thor1a427q3v96psuj4fnughdw8glt5r7j38lj7rkp8: interfaces.vultisig,
+  wr: interfaces.vultisig,
+  tgt: interfaces.vultisig,
+  thorwallet: interfaces.vultisig,
   thor160yye65pf9rzwrgqmtgav69n6zlsyfpgm9a7xk: interfaces.thorswap,
   T: interfaces.thorswap,
   t: interfaces.thorswap,
@@ -802,7 +804,6 @@ export const affiliateMap = {
   oky: interfaces.onekey,
   sy: interfaces.symbiosis,
   Eldorito: interfaces.eld,
-  v0: interfaces.vultisig,
   va: interfaces.vultisig,
   vi: interfaces.vultisig,
   ll: interfaces.ll,

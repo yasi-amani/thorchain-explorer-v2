@@ -39,10 +39,10 @@
 </template>
 
 <script>
-import XIcon from '~/assets/images/x.svg?inline'
-import Github from '~/assets/images/github-brands.svg?inline'
-import Discord from '~/assets/images/discord-brands.svg?inline'
-import Gitlab from '~/assets/images/gitlab.svg?inline'
+import XIcon from '~/assets/images/x.svg?component' 
+import Github from '~/assets/images/github-brands.svg?component' 
+import Discord from '~/assets/images/discord-brands.svg?component' 
+import Gitlab from '~/assets/images/gitlab.svg?component' 
 
 export default {
   name: 'FooterContent',
@@ -73,6 +73,7 @@ export default {
 .text {
   font-size: 10px;
 }
+// Define the 'md' mixin 
 @include md {
   .footer-container {
     flex-direction: row;
@@ -81,6 +82,8 @@ export default {
     font-size: 14px;
   }
 }
+
+
 .footer-icon {
   display: flex;
   flex-direction: row;

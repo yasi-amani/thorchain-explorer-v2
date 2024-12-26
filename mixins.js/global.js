@@ -20,8 +20,10 @@ import {
   blueElectraTheme,
   interfaces,
 } from '~/utils'
-import endpoints from '~/api/endpoints'
+import endpoints from '~/api/endpoints.js'
+
 const colorHash = new ColorHash({ lightness: 0.5 })
+
 
 export default {
   data() {
@@ -50,7 +52,8 @@ export default {
     assetImage(assetStr) {
       try {
         return AssetImage(assetStr) ?? require('~/assets/images/unknown.png')
-      } catch (error) {
+      }
+      catch (error) {
         return require('~/assets/images/unknown.png')
       }
     },
@@ -171,9 +174,9 @@ export default {
     },
     isInternalTx(hash) {
       if (
-        hash ===
-          '0000000000000000000000000000000000000000000000000000000000000000' ||
-        hash === ''
+        hash
+        === '0000000000000000000000000000000000000000000000000000000000000000'
+        || hash === ''
       ) {
         return true
       }
@@ -181,9 +184,9 @@ export default {
     },
     gotoTx(hash) {
       if (
-        hash ===
-          '0000000000000000000000000000000000000000000000000000000000000000' ||
-        hash === ''
+        hash
+        === '0000000000000000000000000000000000000000000000000000000000000000'
+        || hash === ''
       ) {
         return
       }
@@ -191,9 +194,9 @@ export default {
     },
     isValidTx(hash) {
       if (
-        hash ===
-          '0000000000000000000000000000000000000000000000000000000000000000' ||
-        hash === ''
+        hash
+        === '0000000000000000000000000000000000000000000000000000000000000000'
+        || hash === ''
       ) {
         return false
       }
@@ -215,7 +218,7 @@ export default {
         },
         (err) => {
           console.error('Could not copy text: ', err)
-        }
+        },
       )
     },
     checkSynth(asset) {
@@ -267,15 +270,18 @@ export default {
         const asset = assetFromString(assetStr)
         if (isSynthAsset(asset)) {
           del = '/'
-        } else if (asset.trade) {
+        }
+        else if (asset.trade) {
           del = '~'
-        } else if (asset.secure) {
+        }
+        else if (asset.secure) {
           del = '-'
         }
         return asset.chain + del + asset.ticker
-      } catch (error) {
+      }
+      catch (error) {
         console.error(error)
-        console.error("Can't get the asset:", assetStr)
+        console.error('Can\'t get the asset:', assetStr)
       }
     },
     baseAmountFormat(number) {
@@ -309,7 +315,8 @@ export default {
     formatAddress(string) {
       if (string && string.length > 12) {
         return string.slice(0, 6) + '...' + string.slice(-6)
-      } else {
+      }
+      else {
         return string
       }
     },
@@ -324,8 +331,8 @@ export default {
         return string
       }
       return (
-        (isOnlyLast ? '' : string.slice(0, number) + '...') +
-        string.slice(-number)
+        (isOnlyLast ? '' : string.slice(0, number) + '...')
+        + string.slice(-number)
       )
     },
     gotoNodeUrl(node) {
@@ -347,7 +354,7 @@ export default {
       series,
       xAxis,
       extraSettings = {},
-      globalFormatter
+      globalFormatter,
     ) {
       return {
         title: {
@@ -399,9 +406,9 @@ export default {
     parseConstant(key, options) {
       // make sure component has these data in it.
       if (
-        !this.mimir ||
-        !this.networkConst ||
-        !this.networkConst?.int_64_values
+        !this.mimir
+        || !this.networkConst
+        || !this.networkConst?.int_64_values
       ) {
         return {}
       }
@@ -426,10 +433,10 @@ export default {
         name: uniName,
         ...(options?.filter ? { value: options?.filter(value) } : { value }),
         ...(isMimir && { extraInfo: 'Overwritten by Mimir' }),
-        ...(isMimir &&
-          extraText && {
-            extraInfo: `${extraText}, Overwritten by Mimir`,
-          }),
+        ...(isMimir
+          && extraText && {
+          extraInfo: `${extraText}, Overwritten by Mimir`,
+        }),
         ...(!isMimir && extraText && { extraInfo: extraText }),
       }
     },
@@ -545,12 +552,13 @@ export default {
         pools.forEach((p) => {
           const poolAsset = assetFromString(p.asset)
           if (
-            poolAsset.chain === asset.chain &&
-            poolAsset.ticker === asset.ticker
+            poolAsset.chain === asset.chain
+            && poolAsset.ticker === asset.ticker
           ) {
             if (isSynthAsset(asset)) {
               poolAsset.synth = true
-            } else if (asset.trade) {
+            }
+            else if (asset.trade) {
               poolAsset.trade = true
             }
             asset = poolAsset
@@ -584,11 +592,12 @@ export default {
       if (asset?.address) {
         // attempt to fuzzy match address
         asset = this.findAssetInPool(asset, pools)
-      } else if (
-        asset.chain === 'ETH' ||
-        asset.chain === 'AVAX' ||
-        asset.chain === 'BNB' ||
-        asset.chain === 'BSC'
+      }
+      else if (
+        asset.chain === 'ETH'
+        || asset.chain === 'AVAX'
+        || asset.chain === 'BNB'
+        || asset.chain === 'BSC'
       ) {
         // EVM assets can go without address
         asset = this.findAssetInPool(asset, pools)
@@ -628,8 +637,8 @@ export default {
         return amount * this.usdPerRune(pools)
       }
 
-      const pricePerAsset =
-        +pools.find((p) => p.asset === assetToString(copyAsset))
+      const pricePerAsset
+        = +pools.find(p => p.asset === assetToString(copyAsset))
           ?.assetPriceUSD ?? 0
 
       return amount * pricePerAsset
@@ -833,7 +842,8 @@ export default {
         d.forEach((c) => {
           this.addAnimate(c, className, duration)
         })
-      } else {
+      }
+      else {
         this.addAnimate(d, className, duration)
       }
     },

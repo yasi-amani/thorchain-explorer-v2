@@ -1,4 +1,4 @@
-<template>
+<template> 
   <main
     id="default-layout"
     :class="{
@@ -25,133 +25,135 @@
   </main>
 </template>
 
-<script>
-import Vue from 'vue'
-import { mapGetters } from 'vuex'
-import global from '~/mixins.js/global'
+<script setup>
+import { useStore } from 'vuex'
+import { ref, onMounted, watch } from 'vue'
 
-export default {
-  name: 'DefaultLayout',
-  data() {
-    return {
-      darkMode: false,
-      blueElectraMode: false,
-      updateInterval: undefined,
-    }
-  },
-  computed: {
-    ...mapGetters({
-      theme: 'getTheme',
-      menu: 'getIsMenuOn',
-      fullscreen: 'getFullScreen',
-      sidebar: 'getSidebar',
-    }),
-  },
-  watch: {
-    darkMode() {
-      if (this.darkMode) {
-        this.$store.commit('setTheme', true)
-      } else {
-        this.$store.commit('setTheme', false)
-      }
-    },
-    blueElectraMode() {
-      if (this.blueElectraMode) {
-        this.$store.commit('setTheme', 'BlueElectra')
-      } else {
-        this.$store.commit('setTheme', false)
-      }
-    },
-  },
-  mounted() {
-    const htmlElement = document.documentElement
-    const savedTheme = localStorage.getItem('theme')
+const darkMode = ref(false)
+const blueElectraMode = ref(false)
+const updateInterval = ref()
 
-    if (savedTheme === 'BlueElectra') {
-      this.blueElectraMode = true
-      htmlElement.setAttribute('theme', 'BlueElectra')
-      this.$store.commit('setTheme', 'BlueElectra')
-    } else if (savedTheme === 'light') {
-      this.darkMode = false
-      htmlElement.setAttribute('theme', 'light')
-      this.$store.commit('setTheme', false)
-    } else {
-      this.darkMode = true
-      htmlElement.setAttribute('theme', 'dark')
-      this.$store.commit('setTheme', true)
-    }
-    this.getRunePrice()
-    this.$api
-      .getNodes()
-      .then(({ data }) => {
-        this.$store.commit('setNodesData', data)
-      })
-      .catch((e) => console.error(e))
+const store = useStore()
 
-    this.$api
-      .getNetwork()
-      .then(({ data }) => {
-        this.$store.commit('setNetworkData', data)
-      })
-      .catch((e) => console.error(e))
+// استفاده از API از طریق Nuxt Plugin
+const $api = useNuxtApp().$api()
 
-    this.$api
-      .getPools()
-      .then(({ data }) => {
-        this.$store.commit('setPools', data)
-      })
-      .catch((e) => console.error(e))
+// محاسبات
+const theme = computed(() => store.getters['getTheme'])
+const menu = computed(() => store.getters['getIsMenuOn'])
+const fullscreen = computed(() => store.getters['getFullScreen'])
+const sidebar = computed(() => store.getters['getSidebar'])
 
-    this.getChainsHeight()
+// تغییرات Theme
+watch(darkMode, () => {
+  if (darkMode.value) {
+    store.commit('setTheme', true)
+  } else {
+    store.commit('setTheme', false)
+  }
+})
 
-    this.updateInterval = setInterval(() => {
-      this.getChainsHeight()
-      this.getRunePrice()
-    }, 20000)
+watch(blueElectraMode, () => {
+  if (blueElectraMode.value) {
+    store.commit('setTheme', 'BlueElectra')
+  } else {
+    store.commit('setTheme', false)
+  }
+})
 
-    const changeHeight = () => {
-      const vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
-    }
+// متدهای لایف‌سایکل
+onMounted(() => {
+  const htmlElement = document.documentElement
+  const savedTheme = localStorage.getItem('theme')
 
-    changeHeight()
+  if (savedTheme === 'BlueElectra') {
+    blueElectraMode.value = true
+    htmlElement.setAttribute('theme', 'BlueElectra')
+    store.commit('setTheme', 'BlueElectra')
+  } else if (savedTheme === 'light') {
+    darkMode.value = false
+    htmlElement.setAttribute('theme', 'light')
+    store.commit('setTheme', false)
+  } else {
+    darkMode.value = true
+    htmlElement.setAttribute('theme', 'dark')
+    store.commit('setTheme', true)
+  }
 
-    window.addEventListener('resize', changeHeight)
-  },
-  destroyed() {
-    clearInterval(this.updateInterval)
-  },
-  methods: {
-    getChainsHeight() {
-      this.$api
-        .getChainsHeight()
-        .then(async ({ data }) => {
-          const chainsHeight = data
-          const thorHeight = (await this.$api.getTHORLastBlock()).data
-          this.$store.commit('setChainsHeight', {
-            ...chainsHeight,
-            THOR: thorHeight,
-          })
-        })
-        .catch((e) => console.error(e))
-    },
-    getRunePrice() {
-      this.$api
-        .getStats()
-        .then((res) => {
-          this.$store.commit(
-            'setRunePrice',
-            Number.parseFloat(res.data.runePriceUSD)
-          )
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    },
-  },
+  getRunePrice()
+  getNodesData()
+  getNetworkData()
+  getPoolsData()
+  getChainsHeight()
+
+  updateInterval.value = setInterval(() => {
+    getChainsHeight()
+    getRunePrice()
+  }, 20000)
+
+  const changeHeight = () => {
+    const vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+  }
+
+  changeHeight()
+
+  window.addEventListener('resize', changeHeight)
+})
+
+onBeforeUnmount(() => {
+  clearInterval(updateInterval.value)
+})
+
+// متدها
+const getNodesData = async () => {
+  try {
+    const { data } = await $api.getNodes()
+    store.commit('setNodesData', data)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-Vue.mixin(global)
+const getNetworkData = async () => {
+  try {
+    const { data } = await $api.getNetwork()
+    store.commit('setNetworkData', data)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const getPoolsData = async () => {
+  try {
+    const { data } = await $api.getPools()
+    store.commit('setPools', data)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const getChainsHeight = async () => {
+  try {
+    const { data } = await $api.getChainsHeight()
+    const thorHeight = await $api.getTHORLastBlock()
+    store.commit('setChainsHeight', {
+      ...data,
+      THOR: thorHeight.data,
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const getRunePrice = async () => {
+  try {
+    const { data } = await $api.getStats()
+    store.commit('setRunePrice', parseFloat(data.runePriceUSD))
+  } catch (error) {
+    console.error(error)
+  }
+}
 </script>
 
 <style lang="scss">

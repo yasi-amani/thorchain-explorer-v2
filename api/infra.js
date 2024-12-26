@@ -1,22 +1,22 @@
 import endpoints from './endpoints'
 // axios instance
-import { $axiosInstace } from './index'
+import { $axiosInstace, network } from './index'
 
 export function getTHORLastBlock() {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'lastblock'
+    endpoints[network].SERVER_URL + 'lastblock'
   )
 }
 
 export function getBlockHeight(height) {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + `block?height=${height}`
+    endpoints[network].SERVER_URL + `block?height=${height}`
   )
 }
 
 export function getQuote(params) {
   return $axiosInstace.get(
-    endpoints[process.env.NETWORK].SERVER_URL + 'quote',
+    endpoints[network].SERVER_URL + 'quote',
     {
       params,
     }
