@@ -631,15 +631,7 @@ export default {
     },
     changeTimeframe(newDays) {
       this.days = newDays
-      this.updateChart()
-    },
-    updateChart() {
-      this.updateDailyVolume()
-      this.updateDailySwappers()
-      this.updateDailyDexVolume()
-      this.updateThorchainDominance()
-      this.updateModuleBalances()
-      this.updateAddressesChart()
+      this.fetchData()
     },
     getFilteredSwappersData() {
       if (!this.swappersData) return []
