@@ -105,6 +105,11 @@ import {
   getTopSwapsMonthly,
   getBurnedBlocks,
   getExecutionQuality,
+  getDailyDexVolume,
+  getThorchainAddresses,
+  getModuleBalances,
+  getUniqueSwappers,
+  getDailyVolume,
   getAffiliateSwapsDaily,
 } from './middleware.api'
 import {
@@ -299,6 +304,11 @@ export default function ({ $axios }, inject) {
     getTopSwapsMonthly,
     getBurnedBlocks,
     getExecutionQuality,
+    getDailyDexVolume,
+    getThorchainAddresses,
+    getModuleBalances,
+    getUniqueSwappers,
+    getDailyVolume,
     getSecuredAssets,
   }
 

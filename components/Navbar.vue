@@ -313,6 +313,10 @@ export default {
                   name: 'Execution Quality',
                   link: '/insights/execution',
                 },
+                {
+                  name: 'Growth',
+                  link: '/insights/growth',
+                },
               ],
             }
           : false,

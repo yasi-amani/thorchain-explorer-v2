@@ -203,3 +203,28 @@ export function getExecutionQuality() {
     'https://flipsidecrypto.xyz/api/v1/queries/6e18d4c9-3959-4791-a3b2-92a8f27cc120/data/latest'
   )
 }
+export function getDailyVolume() {
+  return $axiosInstace.get(
+    'https://flipsidecrypto.xyz/api/v1/queries/19fe66b1-38a5-4c1f-b91a-75da47cebe3f/data/latest'
+  )
+}
+export function getUniqueSwappers() {
+  return $axiosInstace.get(
+    'https://flipsidecrypto.xyz/api/v1/queries/581abc71-ae73-4bcf-bd4f-8457e588a7c8/data/latest'
+  )
+}
+export function getDailyDexVolume() {
+  return $axiosInstace.get(
+    'https://flipsidecrypto.xyz/api/v1/queries/31594268-05fe-4931-8a03-6c0682feaec4/data/latest'
+  )
+}
+export function getModuleBalances() {
+  return $axiosInstace.get(
+    'https://flipsidecrypto.xyz/api/v1/queries/2a6fcc3f-390b-42fb-99e6-59e54e26cde4/data/latest'
+  )
+}
+export function getThorchainAddresses() {
+  return $axiosInstace.get(
+    'https://flipsidecrypto.xyz/api/v1/queries/0fb08229-627a-4472-afb5-c78b48293aed/data/latest'
+  )
+}
