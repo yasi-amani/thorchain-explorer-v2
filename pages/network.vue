@@ -34,7 +34,7 @@ export default {
         },
         {
           name: 'Liquidity Cap',
-          link: '/network/liquiditycap',
+          link: '/network/liquidity',
         },
       ],
     }

@@ -27,7 +27,7 @@
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field === 'asset'" class="cell-content">
-            <AssetIcon :asset="props.row.asset" chain="THOR.RUNE" />
+            <AssetIcon :asset="props.row.asset" />
             <span class="ellipsis">
               {{ props.formattedRow[props.column.field] }}</span
             >
@@ -115,9 +115,9 @@ export default {
         const tvlCapResponse = await this.$api.getMimir('TVLCAPBASISPOINTS')
         this.tvlCapBasisPoints = tvlCapResponse.data.TVLCAPBASISPOINTS
 
-        const assetPrices = {}
+        const pricesInRune = {}
         pools.forEach((pool) => {
-          assetPrices[pool.asset] =
+          pricesInRune[pool.asset] =
             Number(pool.balance_rune) / Number(pool.balance_asset)
         })
 
@@ -139,13 +139,13 @@ export default {
 
         this.vaultAssets = Array.from(assets.values()).map((asset) => {
           const amountInBase = asset.amount / 1e8
-          const runePrice = assetPrices[asset.asset] || 0
-          const runeValue = amountInBase * runePrice
+          const priceInRune = pricesInRune[asset.asset] || 0
+          const runeValue = amountInBase * priceInRune
 
           return {
             asset: asset.asset,
             amount: amountInBase,
-            runeValue: runeValue,
+            runeValue,
           }
         })
 

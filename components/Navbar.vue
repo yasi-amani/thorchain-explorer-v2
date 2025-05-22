@@ -234,9 +234,9 @@ export default {
               name: 'Pendulum',
               link: '/network/pendulum',
             },
-             {
+            {
               name: 'Liquidity Cap',
-              link: '/network/liquiditycap',
+              link: '/network/liquidity',
             },
           ],
         },
@@ -355,11 +355,11 @@ export default {
                   name: 'Execution Quality',
                   link: '/insights/execution',
                 },
-                 {
+                {
                   name: 'Earning',
                   link: '/charts/earnings',
                 },
-                  {
+                {
                   name: 'Affiliates',
                   link: '/charts/affiliates',
                 },
