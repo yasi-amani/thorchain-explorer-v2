@@ -32,6 +32,10 @@ export default {
           text: 'Pendulum',
           link: '/network/pendulum',
         },
+        {
+          name: 'Liquidity Cap',
+          link: '/network/liquiditycap',
+        },
       ],
     }
   },

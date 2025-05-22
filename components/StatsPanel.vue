@@ -17,9 +17,20 @@
               <span v-if="metric.filter && metric.value !== undefined">
                 {{ metric.filter(metric.value) }}
               </span>
-              <span v-else>
-                {{ metric.value || '-' }}
+              <span
+                v-else-if="metric.value !== undefined && metric.value !== null"
+              >
+                {{ metric.value }}
               </span>
+              <span v-else-if="!metric.progress"> - </span>
+
+              <progress-icon
+                v-if="metric.progress"
+                :data-number="metric.progress.data"
+                :is-down="metric.progress.down"
+                :filter="metric.progress.filter"
+                size="15.5px"
+              />
             </template>
             <slot :name="`metric-icon-${idx}`"></slot>
           </b>
