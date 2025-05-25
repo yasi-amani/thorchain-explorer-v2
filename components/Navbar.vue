@@ -351,6 +351,10 @@ export default {
                   name: 'Execution Quality',
                   link: '/insights/execution',
                 },
+                {
+                  name: 'Whitelist',
+                  link: '/insights/whitelist',
+                },
               ],
             }
           : false,

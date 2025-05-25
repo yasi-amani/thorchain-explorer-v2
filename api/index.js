@@ -121,6 +121,8 @@ import {
 } from './insights.api'
 import { getTHORLastBlock, getBlockHeight, getQuote, getChurn } from './infra'
 import endpoints from './endpoints'
+import { getEthTokenList, getDefaultConfig } from './gitlab.api'
+
 export var $axiosInstace
 
 // interceptor to catch errors
@@ -217,6 +219,8 @@ export default function ({ $axios }, inject) {
     getMimirVotes,
     getLpPositions,
     getPoolDetail,
+    getEthTokenList,
+    getDefaultConfig,
     getAssets,
     getThorPools,
     volumeHistory,

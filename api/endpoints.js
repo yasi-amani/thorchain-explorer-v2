@@ -7,6 +7,7 @@ module.exports = {
     TENDERMINT_URL: 'https://rpc.ninerealms.com/',
     SERVER_URL: 'https://vanaheimex.com/',
     MODULE_ADDR: 'thor1dheycdevq39qlkxs2a6wuuzyn4aqxhve4qxtxt',
+    GITLAB_THORNODE_RAW: 'https://gitlab.com/api/v4/projects/thorchain%2Fthornode/repository/files',
   },
   stagenet: {
     MIDGARD_BASE_URL: 'https://stagenet-midgard.ninerealms.com/v2/',
