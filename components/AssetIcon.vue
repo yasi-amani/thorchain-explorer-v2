@@ -1,6 +1,6 @@
 <template>
   <div :class="['icon-asset-container', ...classes]" :style="heightStyle">
-    <div v-if="isTokenFactory" class="asset-group">
+    <div v-if="isTokenFactory && tokens.length > 1" class="asset-group">
       <div class="left-icon">
         <img
           class="asset-icon"
@@ -64,6 +64,9 @@ export default {
 
       if (asset.id) {
         const [x, y] = asset.symbol.toUpperCase().split('/')
+        if (!y) {
+          return [this.findAssetInPools(x)]
+        }
         return [this.findAssetInPools(x), this.findAssetInPools(y)]
       }
 
