@@ -688,9 +688,10 @@ export function assetFromString(s) {
   }
 
   // Handle "x/staking-x/" denoms
-  if (s.toLowerCase().startsWith('x/staking-x/')) {
-    const id = s.substring('x/staking-x/'.length)
-    const symbol = 's' + id.toUpperCase()
+  if (s.toLowerCase().startsWith('x/staking-')) {
+    const id = s.substring('x/staking-'.length)
+    const asset = assetFromString(id)
+    const symbol = 's' + asset?.ticker?.toUpperCase()
     return {
       chain: 'THOR',
       symbol,
@@ -723,7 +724,7 @@ export function assetFromString(s) {
         return {
           chain: 'THOR',
           symbol: `${xAsset.symbol}/${yAsset.symbol}`,
-          ticker: `${xAsset.ticker}/${yAsset.ticker} LP`,
+          ticker: `${xAsset.ticker}/${yAsset.ticker} LP`.toUpperCase(),
           synth: false,
           trade: false,
           secure: false,

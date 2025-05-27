@@ -152,7 +152,7 @@ export default {
     formatContractAsset(asset) {
       const a = assetFromString(asset)
       if (a) {
-        return a.ticker?.toUpperCase() ?? a
+        return a.ticker ?? a
       }
 
       return asset
