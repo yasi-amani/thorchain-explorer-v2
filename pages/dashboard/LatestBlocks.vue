@@ -8,10 +8,7 @@
           class="block-items"
         >
           <div class="block-info-overview">
-            <nuxt-link
-              class="height clickable"
-              :to="`/block/${block.blockHeight}`"
-            >
+            <nuxt-link class="clickable" :to="`/block/${block.blockHeight}`">
               {{ block.blockHeight | number('0,0') }}
             </nuxt-link>
             <small class="duration">
@@ -78,16 +75,15 @@ export default {
   components: {
     BounceLoader,
     Burn,
-    Rune
+    Rune,
   },
   props: {
     burnedBlocks: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
-  methods: {
-  }
+  methods: {},
 }
 </script>
 
@@ -106,11 +102,6 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
-
-    .height {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
   }
   .block-burned-item {
     padding: $space-4 $space-5;
