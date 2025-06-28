@@ -36,7 +36,8 @@
             )
           "
           >{{ props.row[props.column.field][0] | number('0,0.00') }}
-          <small>RUNE</small></span
+          <RuneAsset :show-icon="false" />
+          </span
         >
         <span
           v-if="props.row[props.column.field][1]"
@@ -69,7 +70,9 @@
 <script>
 import moment from 'moment'
 import { mapGetters } from 'vuex'
+import RuneAsset from '~/components/RuneAsset.vue'
 export default {
+  components: { RuneAsset },
   props: ['address'],
   data() {
     return {

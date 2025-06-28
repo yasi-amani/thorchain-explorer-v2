@@ -5,10 +5,10 @@
         <asset-icon asset="THOR.TCY" height="1.2rem" />
       </template>
       <template #metric-icon-2>
-        <asset-icon asset="THOR.RUNE" height="1.2rem" />
+        <RuneAsset asset="THOR.RUNE" :height="'1.2rem'" />
       </template>
       <template #metric-icon-3>
-        <asset-icon asset="THOR.RUNE" height="1.2rem" />
+        <RuneAsset asset="THOR.RUNE" :height="'1.2rem'" />
       </template>
     </stats-panel>
     <div class="distributions">
@@ -39,7 +39,7 @@
             v-tooltip="props.row.amount * runePrice"
           >
             {{ props.formattedRow[props.column.field] }}
-            <small>RUNE</small>
+            <RuneAsset :show-icon="false" />
           </div>
           <div v-else-if="props.column.field == 'value'">
             {{ ((props.row.amount * runePrice) / 1e8) | currency() }}
@@ -57,10 +57,12 @@
 import { mapGetters } from 'vuex'
 import moment from 'moment'
 import FileDownload from '~/assets/images/file-download.svg?inline'
+import RuneAsset from '~/components/RuneAsset.vue'
 
 export default {
   components: {
     FileDownload,
+    RuneAsset,
   },
   props: {
     address: {
