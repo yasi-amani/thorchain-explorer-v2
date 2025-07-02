@@ -119,7 +119,7 @@ import {
   getTcyInfo,
   getDenoms,
   getContracts,
-  search
+  search,
 } from './middleware.api'
 import {
   getChurnHistory,
@@ -329,7 +329,7 @@ export default function ({ $axios }, inject) {
     getTcyInfo,
     getDenoms,
     getContracts,
-    search
+    search,
   }
 
   inject('api', api)
