@@ -73,13 +73,7 @@
         
         return configs[this.environment] || configs.mainnet
       },
-      getRuneAssetHTML(showIcon = false, height = '1.2rem') {
-      if (showIcon) {
-        return `<svg style="height: ${height}; fill: var(--sec-font-color);" viewBox="0 0 15.859 30.71" xmlns="http://www.w3.org/2000/svg"><polygon points="3.865 30.71 0 30.71 0 0 3.865 0 13.758 5.587 13.758 9.809 10.23 15.859 15.859 30.71 11.742 30.71 6.155 15.649 10.482 8.129 3.865 4.39 3.865 30.71" style="fill-rule: evenodd; stroke-width: 0px;"/></svg>`
-      } else {
-        return `<span>${this.getAssetSymbol()}</span>`
-      }
-    },      
+      
       getAssetSymbol() {
         if (this.asset === 'THOR.RUNE') {
           return this.getAssetConfig().symbol
