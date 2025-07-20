@@ -47,6 +47,7 @@ export default {
     'width',
     'height',
     'click',
+    'showLegendOnMobile',
   ],
   data() {
     return {
@@ -73,7 +74,7 @@ export default {
           },
         ],
         ...this.extra,
-        ...(this.isMobile && { legend: { show: false } }),
+        ...(this.isMobile && !this.showLegendOnMobile && { legend: { show: false } }),
       }
     },
   },

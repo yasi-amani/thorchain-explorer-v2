@@ -112,7 +112,8 @@
               :pie-data="balanceAllocationData"
               :extra-series="chartExtraSeries"
               :extra="chartExtra"
-              :height="'200px'"
+              :height="isMobile ? '150px' : '200px'"
+              :show-legend-on-mobile="false"
             />
           </div>
         </div>
@@ -269,6 +270,7 @@ export default {
         Synth: 'desc',
       },
       searchQuery: '',
+      windowWidth: 0,
     }
   },
   computed: {
@@ -420,7 +422,7 @@ export default {
     chartExtraSeries() {
       return {
         center: ['50%', '45%'],
-        radius: ['35%', '60%'],
+        radius: this.isMobile ? ['25%', '50%'] : ['35%', '60%'],
         label: {
           show: false,
         },
@@ -431,17 +433,26 @@ export default {
         legend: {
           show: true,
           type: 'plain',
-          orient: 'vertical',
+          orient: this.isMobile ? 'horizontal' : 'vertical',
           x: 'center',
-          y: 'bottom',
+          y: this.isMobile ? 'bottom' : 'bottom',
           icon: 'circle',
           textStyle: {
             color: 'var(--font-color)',
+            fontSize: this.isMobile ? 10 : 12,
           },
         },
         tooltip: {
           formatter: (a) => {
-            return `${a.name}: <span class='mono'>${this.numberFormat(a?.data?.value)}<span> <small>RUNE</small>`
+            const fontSize = this.isMobile ? '10px' : '12px'
+            const smallFontSize = this.isMobile ? '8px' : '10px'
+
+            return this.isMobile
+              ? `<div style="font-size: ${fontSize}"><span class='mono' style="font-size: ${fontSize}">${this.numberFormat(a?.data?.value)}</span> <small style="font-size: ${smallFontSize}">RUNE</small></div>`
+              : `<div style="font-size: ${fontSize}">${a.name}: <span class='mono' style="font-size: ${fontSize}">${this.numberFormat(a?.data?.value)}</span> <small style="font-size: ${smallFontSize}">RUNE</small></div>`
+          },
+          textStyle: {
+            fontSize: this.isMobile ? 10 : 12,
           },
         },
       }
@@ -476,6 +487,9 @@ export default {
 
       return explorers
     },
+    isMobile() {
+      return this.windowWidth <= 768
+    },
   },
   methods: {
     getAssetType(asset) {
@@ -508,6 +522,22 @@ export default {
       this.sortDirection[type] =
         this.sortDirection[type] === 'asc' ? 'desc' : 'asc'
     },
+    handleResize() {
+      if (process.client) {
+        this.windowWidth = window.innerWidth
+      }
+    },
+  },
+  mounted() {
+    if (process.client) {
+      this.windowWidth = window.innerWidth
+      window.addEventListener('resize', this.handleResize)
+    }
+  },
+  beforeDestroy() {
+    if (process.client) {
+      window.removeEventListener('resize', this.handleResize)
+    }
   },
 }
 </script>
@@ -531,6 +561,11 @@ export default {
   align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
 }
 
 .balance-info {
@@ -566,6 +601,19 @@ export default {
 .balance-chart-section {
   border-radius: $radius-md;
   min-width: 210px;
+
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+
+    > div {
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow: hidden;
+    }
+  }
 }
 
 .mono {
